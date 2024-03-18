@@ -50,6 +50,7 @@
 	</dependencies>
 
 	<build>
+
 		<finalName>clubDeportivo</finalName>
 		<plugins>
 			<plugin>
