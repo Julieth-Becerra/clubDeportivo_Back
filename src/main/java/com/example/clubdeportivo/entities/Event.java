@@ -22,7 +22,7 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private LocalDate date;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("event")
     private List<Participation> participations;
 

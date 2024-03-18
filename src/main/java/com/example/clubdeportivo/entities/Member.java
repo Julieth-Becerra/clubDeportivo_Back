@@ -28,7 +28,7 @@ public class Member implements Serializable {
     @JoinColumn(name = "sport_discipline_id")
     private SportDiscipline sportDiscipline;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations;
 
     public Member() {
