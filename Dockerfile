@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 # Package stage
 #
 FROM openjdk:17-alpine
-COPY --from=build /target/clubDeportivo.jar clubDeportivo.jar
+COPY --from=build /target/clubDeportivo.jar taller-electiva.jar
 # ENV PORT=8080
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","clubDeportivo.jar"]
+ENTRYPOINT ["java","-jar","taller-electiva.jar"]
