@@ -3,6 +3,7 @@ package com.example.clubdeportivo.services;
 import com.example.clubdeportivo.entities.Member;
 import com.example.clubdeportivo.entities.SportDiscipline;
 import com.example.clubdeportivo.repositories.MemberRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +47,17 @@ public class MemberService {
 
     public Member findMemberBySportDiscipline(SportDiscipline sportDiscipline) {
         return memberRepository.findMemberBySportDiscipline(sportDiscipline);
+    }
+
+    @Transactional
+    public void removeSportDisciplineReferences(Integer sportDisciplineId) {
+        // Obtener todos los miembros asociados con la disciplina
+        List<Member> members = memberRepository.findBySportDisciplineId(sportDisciplineId);
+
+        // Establecer la disciplina como null en cada miembro
+        for (Member member : members) {
+            member.setSportDiscipline(null);
+            memberRepository.save(member);
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.clubdeportivo.services;
 
+import com.example.clubdeportivo.entities.Member;
 import com.example.clubdeportivo.entities.SportDiscipline;
 import com.example.clubdeportivo.repositories.SportDisciplineRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

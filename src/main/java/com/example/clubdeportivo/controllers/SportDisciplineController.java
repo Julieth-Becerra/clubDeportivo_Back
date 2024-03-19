@@ -60,18 +60,23 @@ public class SportDisciplineController {
             SportDiscipline sportDiscipline = sportDisciplineService.findById(id);
             if (sportDiscipline != null) {
                 if (!memberService.hasMembersForSportDiscipline(id)) {
-                    Member member = memberService.findMemberBySportDiscipline(sportDiscipline);
-                    member.setSportDiscipline(null);
+                    // Eliminar las referencias de la disciplina en los miembros
+                    memberService.removeSportDisciplineReferences(id);
+
+                    // Ahora puedes eliminar la disciplina
                     sportDisciplineService.deleteSportDiscipline(sportDiscipline);
+
                     return ResponseHandler.generateResponse("Sport discipline deleted successfully", HttpStatus.OK, sportDiscipline);
                 }
-                return ResponseHandler.generateResponse("Sport discipline has associaated members", HttpStatus.CONFLICT, sportDiscipline);
+                return ResponseHandler.generateResponse("Sport discipline has associated members", HttpStatus.CONFLICT, sportDiscipline);
             }
             return ResponseHandler.generateResponse("Sport discipline not found", HttpStatus.NOT_FOUND, null);
         } catch (Exception e) {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+
+
 
     @PutMapping("/sportDisciplines/{id}")
     public ResponseEntity<Object> updateSportDiscipline(@PathVariable Integer id, @RequestBody SportDiscipline sportDiscipline) {

@@ -54,4 +54,5 @@ public class SportDiscipline implements Serializable {
         this.type = type;
     }
 
+
 }
