@@ -18,7 +18,7 @@ public class SportDiscipline implements Serializable {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "sportDiscipline", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sportDiscipline")
     private List<Member> members;
 
     @Enumerated(EnumType.STRING)

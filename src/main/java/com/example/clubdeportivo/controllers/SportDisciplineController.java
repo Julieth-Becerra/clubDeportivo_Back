@@ -1,7 +1,9 @@
 package com.example.clubdeportivo.controllers;
 
+import com.example.clubdeportivo.entities.Member;
 import com.example.clubdeportivo.entities.SportDiscipline;
 import com.example.clubdeportivo.responses.ResponseHandler;
+import com.example.clubdeportivo.services.MemberService;
 import com.example.clubdeportivo.services.SportDisciplineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,9 @@ public class SportDisciplineController {
 
     @Autowired
     private SportDisciplineService sportDisciplineService;
+
+    @Autowired
+    private MemberService memberService;
 
     @GetMapping("/sportDisciplines")
     public ResponseEntity<Object> findAllSportDisciplines() {
@@ -54,8 +59,13 @@ public class SportDisciplineController {
         try {
             SportDiscipline sportDiscipline = sportDisciplineService.findById(id);
             if (sportDiscipline != null) {
-                sportDisciplineService.deleteSportDiscipline(sportDiscipline);
-                return ResponseHandler.generateResponse("Sport discipline deleted successfully", HttpStatus.OK, sportDiscipline);
+                if (!memberService.hasMembersForSportDiscipline(id)) {
+                    Member member = memberService.findMemberBySportDiscipline(sportDiscipline);
+                    member.setSportDiscipline(null);
+                    sportDisciplineService.deleteSportDiscipline(sportDiscipline);
+                    return ResponseHandler.generateResponse("Sport discipline deleted successfully", HttpStatus.OK, sportDiscipline);
+                }
+                return ResponseHandler.generateResponse("Sport discipline has associaated members", HttpStatus.CONFLICT, sportDiscipline);
             }
             return ResponseHandler.generateResponse("Sport discipline not found", HttpStatus.NOT_FOUND, null);
         } catch (Exception e) {
