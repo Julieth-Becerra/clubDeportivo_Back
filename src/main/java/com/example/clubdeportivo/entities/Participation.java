@@ -13,14 +13,14 @@ public class Participation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    @JsonIgnoreProperties("participations") // Evita la serialización de la relación bidireccional
+    @JsonIgnoreProperties("participations")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
-    @JsonIgnoreProperties("participations") // Evita la serialización de la relación bidireccional
+    @JsonIgnoreProperties("participations")
     private Event event;
 
     @Column(nullable = false)
