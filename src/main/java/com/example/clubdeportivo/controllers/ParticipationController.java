@@ -47,7 +47,20 @@ public class ParticipationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteParticipation(@PathVariable Integer id) {
+        // Buscar la participación a eliminar
+        Participation participation = participationService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Participation not found with ID: " + id));
+
+        // Obtener el evento asociado a la participación
+        Event event = participation.getEvent();
+
+        // Eliminar la participación del evento
+        event.getParticipations().remove(participation);
+
+        // Eliminar la participación de la base de datos
         participationService.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
+
 }
