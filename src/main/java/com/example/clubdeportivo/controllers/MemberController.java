@@ -1,8 +1,10 @@
 package com.example.clubdeportivo.controllers;
 
 import com.example.clubdeportivo.entities.Member;
+import com.example.clubdeportivo.entities.Participation;
 import com.example.clubdeportivo.responses.ResponseHandler;
 import com.example.clubdeportivo.services.MemberService;
+import com.example.clubdeportivo.services.ParticipationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,9 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private ParticipationService participationService;
 
     @GetMapping("/members")
     public ResponseEntity<Object> findAllMembers() {
@@ -56,6 +61,16 @@ public class MemberController {
         try {
             Member member = memberService.findById(id);
             if (member != null) {
+                List<Participation> participations = member.getParticipations();
+                if (!participations.isEmpty()) {
+                    // Establecer el miembro en null en cada participación
+                    for (Participation participation : participations) {
+                        participation.setMember(null);
+                        // Actualizar la participación individualmente
+                        participationService.update(participation);
+                    }
+                }
+                // Finalmente, eliminar el miembro
                 memberService.deleteMember(member);
                 return ResponseHandler.generateResponse("Member deleted successfully", HttpStatus.OK, member);
             }
@@ -64,6 +79,8 @@ public class MemberController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+
+
 
     @PutMapping("/members/{id}")
     public ResponseEntity<Object> updateMember(@PathVariable Integer id, @RequestBody Member member) {

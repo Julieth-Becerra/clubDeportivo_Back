@@ -14,12 +14,12 @@ public class Participation implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     @JsonIgnoreProperties("participations")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
+    @JoinColumn(name = "event_id")
     @JsonIgnoreProperties("participations")
     private Event event;
 

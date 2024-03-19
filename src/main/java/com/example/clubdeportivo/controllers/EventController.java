@@ -1,8 +1,10 @@
 package com.example.clubdeportivo.controllers;
 
 import com.example.clubdeportivo.entities.Event;
+import com.example.clubdeportivo.entities.Participation;
 import com.example.clubdeportivo.responses.ResponseHandler;
 import com.example.clubdeportivo.services.EventService;
+import com.example.clubdeportivo.services.ParticipationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+    @Autowired
+    private ParticipationService participationService;
 
     @GetMapping("/events")
     public ResponseEntity<Object> findAllEvents() {
@@ -54,7 +58,19 @@ public class EventController {
         try {
             Event event = eventService.findById(id);
             if (event != null) {
+                // Obtener la lista de participaciones asociadas al evento
+                List<Participation> participations = event.getParticipations();
+
+                // Actualizar manualmente las participaciones para eliminar la referencia al evento
+                for (Participation participation : participations) {
+                    participation.setEvent(null);
+                    // Guardar la participación actualizada
+                    participationService.update(participation);
+                }
+
+                // Eliminar el evento
                 eventService.deleteEvent(event);
+
                 return ResponseHandler.generateResponse("Event deleted successfully", HttpStatus.OK, event);
             }
             return ResponseHandler.generateResponse("Event not found", HttpStatus.NOT_FOUND, null);
@@ -62,6 +78,10 @@ public class EventController {
             return ResponseHandler.generateResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
+
+
+
+
 
     @PutMapping("/events/{id}")
     public ResponseEntity<Object> updateEvent(@PathVariable Integer id, @RequestBody Event event) {
